@@ -1,6 +1,9 @@
 (ns signatures.core
   (:gen-class))
 
+(defn char-range [start end]
+  (map char (range (int start) (inc (int end)))))
+
 (defn parse-int [s]
   (Integer/parseInt (re-find #"\A-?\d+" s)))
 
@@ -12,13 +15,14 @@
         no-pages (count page-nos)
         no-sheets (int (Math/ceil (/ no-pages 4)))
         no-signatures (int (Math/ceil (/ no-pages 16)))
-        signatures (partition 16 16 nil page-nos)]
+        signatures (partition 16 16 nil page-nos)
+        alphabet (char-range \A \Z)]
     (println (str "Number of document pages to print: " no-pages))
     (println (str "Number of sheets to print: " no-sheets))
     (println (str "Number of 4-sheet signatures to bind: " no-signatures))
     (println "#####################################")
-    (doseq [[i signature] (map-indexed vector signatures)]
-      (println (str "Signature " (inc i) ". First page: " (first signature) ", last page: " (last signature))))
+    (doseq [[letter signature] (map vector alphabet signatures)]
+      (println (str "Signature " letter ". First page: " (first signature) ", last page: " (last signature))))
     (println "#####################################")))
 
 (defn -main
